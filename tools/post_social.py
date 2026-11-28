@@ -235,7 +235,8 @@ def figures():
         + ["",
            "ℹ️ Keolis Region 8 only. School & charter services excluded.",
            f"👉 Full figures: {SITE}",
-           f"📲 Free app: {INSTALL}"])
+           f"📲 Free app: {INSTALL}",
+           FOLLOW])
     blocks = [("Today so far", d, ""), ("Last 7 days", w, since(w, 7).strip(" ()"))]
     if show_month:
         blocks.append(("Last 30 days", m, since(m, 30).strip(" ()")))
@@ -286,7 +287,8 @@ def weekly_figures():
         + ["",
            "ℹ️ Keolis Region 8 only. School & charter services excluded.",
            f"👉 Full figures: {SITE}",
-           f"📲 Free app: {INSTALL}"])
+           f"📲 Free app: {INSTALL}",
+           FOLLOW])
     return {"when": when + partial, "total": w, "worst": worst, "bad_day": bd, "change": change, "text": text,
             "score": rating(w)[0]}
 
@@ -471,6 +473,16 @@ def configured():
     return bool((os.environ.get("FB_PAGE_ID", "").strip() or PAGE_ID) and os.environ.get("FB_PAGE_TOKEN", "").strip())
 
 
+FOLLOW = "👍 Follow the page for daily Beaches bus updates 🚌"
+
+
+def explain(err):
+    """Turn a Facebook error into a plain reason, so the alert says what to fix."""
+    if '"code":190' in err or '"code":200' in err or "OAuthException" in err:
+        return "TOKEN DEAD: replace the FB_PAGE_TOKEN secret. " + err
+    return err
+
+
 # Hashtags added to the end of every Facebook post. Neutral: no operator-blaming or political tags.
 HASHTAGS = {
     "summary": "#NorthernBeachesBusWatch #NorthernBeaches #NorthernBeachesBuses #BLine #SydneyBuses",
@@ -553,7 +565,7 @@ def auto():
             fb[kind] = today
         else:
             fb[f"{kind}_tries"] = {today: tries + 1}
-            fb["last_error"] = f"{now.isoformat(timespec='minutes')} {kind}: {LAST_ERROR or 'no figures yet'}"
+            fb["last_error"] = f"{now.isoformat(timespec='minutes')} {kind}: {explain(LAST_ERROR) if LAST_ERROR else 'no figures yet'}"
         changed = True
     if changed:
         os.makedirs(OUT_DIR, exist_ok=True)
