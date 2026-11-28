@@ -3,6 +3,7 @@
   python tools/post_social.py auto       -> run by the collector every 5 min; posts the afternoon summary once a day
   python tools/post_social.py summary    -> post the summary now
   python tools/post_social.py weekly     -> post last week's review now (Mondays 8am automatically)
+  python tools/post_social.py story      -> post the morning story now (yesterday's result; 7am automatically)
   add --dry-run to only build the image and text (saved in data/social/)
 
 One post a day at POST_AT (Sydney time): today so far, the last 7 days and the last 30 days, with a link to the site.
@@ -34,6 +35,7 @@ FB_API = "https://graph.facebook.com/v26.0"
 PAGE_ID = "1455302057670675"   # Northern Beaches Bus Watch (public)
 POST_AT = (17, 30)       # 5:30 pm, mid evening peak while commuters are on the bus home
 WEEKLY_AT = (8, 0)       # Mondays 8:00 am: week in review (Monday to Sunday just gone)
+STORY_AT, STORY_UNTIL = (7, 0), 10   # morning story: yesterday's result, 7-10 am
 POST_UNTIL, WEEKLY_UNTIL = 21, 12   # if the tracker was down, skip the post rather than send it late at night
 MAX_TRIES = 3
 LAST_ERROR = ""   # why the last Facebook post failed (token removed), saved in posted.json
@@ -394,6 +396,63 @@ def draw_card(f, path):
     im.save(path, "PNG", optimize=True)
 
 
+def draw_story(D, path):
+    """1080x1920 portrait story card: yesterday's result + rating dial. Light and simple to read on a phone."""
+    W, H = 1080, 1920
+    im = Image.new("RGB", (W, H), "#ffffff")
+    top, bot = (126, 196, 240), (238, 247, 255)
+    d = ImageDraw.Draw(im)
+    for y in range(H):
+        t = y / H
+        d.line([(0, y), (W, y)], fill=tuple(int(top[i] + (bot[i] - top[i]) * t) for i in range(3)))
+    navy, grey = "#0f2747", "#4a5f7a"
+    c = lambda txt, y, f, col: d.text(((W - d.textlength(txt, font=f)) / 2, y), txt, font=f, fill=col)
+    c("Good morning, Beaches", 170, font(64, True), navy)
+    c(f"How the buses went {D['short_day']}", 260, font(40), grey)
+    d.rounded_rectangle((90, 360, 990, 830), radius=40, fill="#0f2747")
+    draw_dial(im, W // 2, 660, 230, D["score"], "Yesterday")
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((90, 880, 990, 1380), radius=40, fill="white")
+    c(f"{D['cxl']:,}", 920, font(150, True), navy)
+    c(f"buses cancelled ({D['cxl_pct']})", 1100, font(44), grey)
+    if D.get("on_pct") is not None:
+        c(f"{D['on_pct']:.0f}% ran on time", 1180, font(44, True), navy)
+    if D.get("worst"):
+        c(f"Worst route: {D['worst'][0]} ({D['worst'][1]} cancelled)", 1265, font(36), grey)
+    c("Live status all day:", 1490, font(44, True), navy)
+    c("nbbuswatch.github.io", 1555, font(52, True), "#1565c0")
+    c("Follow the page for daily updates", 1680, font(40), navy)
+    c("Keolis Region 8 only · School & charter excluded · Data: TfNSW", 1830, font(26), grey)
+    im.save(path, "PNG", optimize=True)
+
+
+def post_story(image_path):
+    """Upload the image unpublished, then publish it as a Page story (stories last 24 hours)."""
+    global LAST_ERROR
+    page, token = (os.environ.get("FB_PAGE_ID", "").strip() or PAGE_ID), os.environ.get("FB_PAGE_TOKEN", "").strip()
+    with open(image_path, "rb") as fh:
+        r = requests.post(f"{FB_API}/{page}/photos", data={"published": "false", "access_token": token},
+                          files={"source": ("story.png", fh, "image/png")}, timeout=60)
+    if r.status_code < 400:
+        r = requests.post(f"{FB_API}/{page}/photo_stories",
+                          data={"photo_id": r.json().get("id", ""), "access_token": token}, timeout=60)
+    if r.status_code >= 400:
+        LAST_ERROR = re.sub(r"access_token=[^&\s]+", "access_token=***", r.text[:300])
+        print("Facebook story error:", LAST_ERROR)
+        return False
+    print("Facebook: story posted")
+    return True
+
+
+def story_figures():
+    yday = (dt.datetime.now(SYD).date() - dt.timedelta(days=1))
+    D = card_data(yday.isoformat())
+    if not D["sched"]:
+        sys.exit("No figures for yesterday; no story.")
+    D["short_day"] = yday.strftime("on %A %-d %b")
+    return D
+
+
 def post_facebook(text, image_path):
     page, token = (os.environ.get("FB_PAGE_ID", "").strip() or PAGE_ID), os.environ.get("FB_PAGE_TOKEN", "").strip()
     with open(image_path, "rb") as fh:
@@ -427,8 +486,21 @@ def with_hashtags(text, kind, score):
 
 
 def publish(kind="summary", dry=False):
+    global LAST_ERROR
     os.makedirs(OUT_DIR, exist_ok=True)
     img = os.path.join(OUT_DIR, f"{kind}.png")
+    if kind == "story":   # morning story: image only, no caption
+        draw_story(story_figures(), img)
+        print("Story image:", img)
+        if dry:
+            return True
+        try:
+            return post_story(img)
+        except Exception as exc:
+            global LAST_ERROR
+            LAST_ERROR = f"{type(exc).__name__}: {str(exc)[:200]}"
+            print("Facebook story failed:", LAST_ERROR)
+            return False
     if kind == "weekly":   # Monday morning week in review
         f = weekly_figures()
         draw_weekly_new(f, img)
@@ -442,7 +514,6 @@ def publish(kind="summary", dry=False):
     try:
         return post_facebook(f["text"], img)
     except Exception as exc:
-        global LAST_ERROR
         LAST_ERROR = f"{type(exc).__name__}: {str(exc)[:200]}"
         print("Facebook failed:", LAST_ERROR)
         return False
@@ -464,6 +535,8 @@ def auto():
     due = []
     if now.weekday() == 0 and (now.hour, now.minute) >= WEEKLY_AT and now.hour < WEEKLY_UNTIL:
         due.append("weekly")
+    if (now.hour, now.minute) >= STORY_AT and now.hour < STORY_UNTIL:
+        due.append("story")
     if (now.hour, now.minute) >= POST_AT and now.hour < POST_UNTIL:
         due.append("summary")
     changed = False
@@ -495,7 +568,7 @@ def main():
         return auto()
     if not configured() and not dry:
         sys.exit("The Facebook Page isn't set up yet (add the FB_PAGE_ID and FB_PAGE_TOKEN secrets first).")
-    if not publish(mode if mode in ("summary", "weekly") else "summary", dry=dry):
+    if not publish(mode if mode in ("summary", "weekly", "story") else "summary", dry=dry):
         sys.exit(1)
 
 
