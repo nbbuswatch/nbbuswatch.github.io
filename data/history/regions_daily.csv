@@ -95,27 +95,32 @@ date,code,name,scheduled,cancelled,observed,late,ontime
 2026-11-28,agency:7060,Operator 7060,0,0,45,2,43
 2026-11-28,agency:7066,Operator 7066,0,1,200,9,191
 2026-11-28,agency:7077,Operator 7077,0,0,221,13,208
-2026-11-29,GSBC001,Busways R1,1993,0,22,1,21
-2026-11-29,GSBC002,Transit Systems NSW SW,1115,0,0,0,0
-2026-11-29,GSBC003,Transit Systems NSW,1486,0,28,3,25
-2026-11-29,GSBC004,CDC NSW R4,1807,2,90,10,80
-2026-11-29,GSBC007,Busways North West,1626,0,63,6,57
-2026-11-29,GSBC008,Keolis Downer Northern Beaches,2455,0,0,0,0
-2026-11-29,GSBC009,Transdev John Holland Buses,3812,2,133,16,117
-2026-11-29,GSBC010,U-Go Mobility,1341,1,24,2,22
-2026-11-29,GSBC014,CDC NSW R14,654,0,0,0,0
+2026-11-29,GSBC001,Busways R1,1993,0,38,1,37
+2026-11-29,GSBC002,Transit Systems NSW SW,1115,0,17,0,17
+2026-11-29,GSBC003,Transit Systems NSW,1486,0,38,4,34
+2026-11-29,GSBC004,CDC NSW R4,1807,2,110,10,100
+2026-11-29,GSBC007,Busways North West,1626,0,81,6,75
+2026-11-29,GSBC008,Keolis Downer Northern Beaches,2455,0,41,0,41
+2026-11-29,GSBC009,Transdev John Holland Buses,3812,2,212,16,196
+2026-11-29,GSBC010,U-Go Mobility,1341,1,26,2,24
+2026-11-29,GSBC014,CDC NSW R14,654,0,2,0,2
+2026-11-29,agency:2448,Operator 2448,0,0,1,0,1
 2026-11-29,agency:2450,Operator 2450,0,0,1,0,1
 2026-11-29,agency:2454,Operator 2454,0,2,3,0,3
-2026-11-29,agency:2459,Operator 2459,0,0,82,5,77
+2026-11-29,agency:2458,Operator 2458,0,0,1,0,1
+2026-11-29,agency:2459,Operator 2459,0,0,118,7,111
 2026-11-29,agency:2606,Operator 2606,0,0,4,0,4
-2026-11-29,agency:2607,Operator 2607,0,0,3,0,3
-2026-11-29,agency:3000,Operator 3000,0,0,13,0,13
-2026-11-29,agency:700003,Operator 700003,0,0,9,0,9
-2026-11-29,agency:700011,Operator 700011,0,0,17,0,17
-2026-11-29,agency:7016,Operator 7016,0,0,11,0,11
+2026-11-29,agency:2607,Operator 2607,0,0,8,0,8
+2026-11-29,agency:3000,Operator 3000,0,0,14,0,14
+2026-11-29,agency:700003,Operator 700003,0,0,12,0,12
+2026-11-29,agency:700005,Operator 700005,0,0,2,0,2
+2026-11-29,agency:700011,Operator 700011,0,0,28,0,28
+2026-11-29,agency:700015,Operator 700015,0,0,11,0,11
+2026-11-29,agency:7016,Operator 7016,0,0,18,0,18
 2026-11-29,agency:7024,Operator 7024,0,0,5,2,3
-2026-11-29,agency:7028,Operator 7028,0,0,4,1,3
-2026-11-29,agency:7051,Operator 7051,0,0,23,0,23
-2026-11-29,agency:7054,Operator 7054,0,0,11,0,11
-2026-11-29,agency:7057,Operator 7057,0,0,20,2,18
-2026-11-29,agency:7077,Operator 7077,0,0,10,1,9
+2026-11-29,agency:7028,Operator 7028,0,0,8,1,7
+2026-11-29,agency:7051,Operator 7051,0,0,33,0,33
+2026-11-29,agency:7054,Operator 7054,0,0,19,0,19
+2026-11-29,agency:7057,Operator 7057,0,0,28,2,26
+2026-11-29,agency:7060,Operator 7060,0,0,2,0,2
+2026-11-29,agency:7077,Operator 7077,0,0,19,1,18
