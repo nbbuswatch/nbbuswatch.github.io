@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-29T04:31:32+11:00",
+ "updated": "2026-11-29T04:36:08+11:00",
  "status": "ok",
  "date": "2026-11-29",
  "count_due": 0,
@@ -25,7 +25,7 @@
  "gaps": [],
  "late_trips": [],
  "last_hour": {
-  "scheduled": 8,
+  "scheduled": 11,
   "cancelled": 0,
   "observed": 0,
   "ontime": 0,
