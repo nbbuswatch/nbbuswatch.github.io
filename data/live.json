@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-29T04:45:20+11:00",
+ "updated": "2026-11-29T04:49:56+11:00",
  "status": "ok",
  "date": "2026-11-29",
  "count_due": 0,
@@ -7,13 +7,13 @@
  "scheduled": 2455,
  "count": 0,
  "cancel_pct": 0.0,
- "observed": 41,
- "late": 0,
- "late_pct": 0.0,
- "avg_late_min": null,
- "ontime": 41,
- "ontime_pct": 100.0,
- "anywhere_late_pct": 0.0,
+ "observed": 44,
+ "late": 1,
+ "late_pct": 2.3,
+ "avg_late_min": 8.0,
+ "ontime": 43,
+ "ontime_pct": 97.7,
+ "anywhere_late_pct": 1.8,
  "am": {
   "scheduled": 311,
   "cancelled": 0
@@ -23,13 +23,20 @@
   "cancelled": 0
  },
  "gaps": [],
- "late_trips": [],
+ "late_trips": [
+  {
+   "route": "B1",
+   "headsign": "City Wynyard",
+   "start_time": "04:43",
+   "late_min": 8
+  }
+ ],
  "last_hour": {
-  "scheduled": 13,
+  "scheduled": 15,
   "cancelled": 0,
-  "observed": 1,
-  "ontime": 1,
-  "late": 0
+  "observed": 3,
+  "ontime": 2,
+  "late": 1
  },
  "trips": [],
  "active": {
@@ -40,7 +47,7 @@
   ],
   "2087725": [
    null,
-   -2,
+   -1,
    1
   ],
   "2087781": [
@@ -65,7 +72,7 @@
   ],
   "2087950": [
    null,
-   2,
+   4,
    1
   ],
   "2087963": [
@@ -89,8 +96,8 @@
    null
   ],
   "2088156": [
-   3,
-   3,
+   8,
+   8,
    1
   ],
   "2088357": [
@@ -99,6 +106,11 @@
    null
   ],
   "2088359": [
+   0,
+   0,
+   null
+  ],
+  "2088377": [
    0,
    0,
    null
@@ -134,9 +146,9 @@
    null
   ],
   "2373735": [
-   0,
-   0,
-   null
+   1,
+   1,
+   1
   ],
   "2374338": [
    0,
@@ -149,6 +161,11 @@
    null
   ],
   "2374488": [
+   0,
+   0,
+   null
+  ],
+  "2375064": [
    0,
    0,
    null
@@ -213,6 +230,11 @@
    0,
    null
   ],
+  "2377746": [
+   0,
+   0,
+   null
+  ],
   "2388807": [
    0,
    0,
@@ -246,7 +268,7 @@
   "2420803": [
    null,
    -2,
-   1
+   null
   ],
   "2420888": [
    0,
@@ -271,7 +293,7 @@
   "2713911": [
    0,
    0,
-   null
+   1
   ],
   "2713913": [
    0,
